@@ -33,11 +33,13 @@ consumeMul ('m' : 'u' : 'l' : '(' : xs) =
 consumeMul (_ : xs) = consumeMul xs
 consumeMul [] = 0
 
+consumeFst _ [] = (0, [])
 consumeFst n1 (x : xs)
   | isDigit x = consumeFst (addDigit n1 x) xs
   | x == ',' = consumeSnd n1 0 xs
   | otherwise = (0, x : xs)
 
+consumeSnd _ _ [] = (0, [])
 consumeSnd n1 n2 (x : xs)
   | isDigit x = consumeSnd n1 (addDigit n2 x) xs
   | x == ')' = (n1 * n2, xs)
