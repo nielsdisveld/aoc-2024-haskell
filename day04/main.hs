@@ -1,6 +1,6 @@
 import Control.Monad (unless)
 import Control.Monad.State (State, get, modify, runState)
-import Data.List (filter, group, sort, transpose)
+import Data.List (concatMap, filter, group, intersect, sort, transpose)
 
 testInput = "MMMSXXMASM\nMSAMXMSMSA\nAMXSXMAAMM\nMSAMASMSMX\nXMASAMXAMM\nXXAMMXXAMA\nSMSMSASXSS\nSAXAMASAAA\nMAMMMXMMMM\nMXMXAXMASX"
 
@@ -29,8 +29,7 @@ part2 xss =
   let withIds = addIds xss
       diags = diagonals withIds
       diags2 = diagonals (flipHor withIds)
-      feasible = findAllMas diags ++ findAllMas diags2
-   in (length . filter (2 ==) . fmap length . group . sort) feasible
+   in length (findAllMas diags `intersect` findAllMas diags2)
 
 -- count (part1)
 countCols = countLines . transpose
@@ -58,7 +57,7 @@ diagonals [] = []
 diagonals ((x : xs) : yss) = [x] : zipDiagonals xs (diagonals yss)
 diagonals ([] : yss) = yss
 
--- similar to 'zipwith (:)' but does not return empty list when one of the list arguments exhausts
+-- similar to 'zipWith (:)' but does not return empty list when one of the list arguments exhausts
 zipDiagonals [] yss = yss
 zipDiagonals xs [] = fmap (: []) xs
 zipDiagonals (x : xs) (ys : yss) = (x : ys) : zipDiagonals xs yss
