@@ -25,14 +25,11 @@ part2 (rules, updates) = (scoreMany . correctMany rules . incorrect rules) updat
 
 -- parse
 parse str =
-  let lns = lines str
-      (rules, updates) = splitList "" lns
+  let (rules, updates) = splitList "" (lines str)
    in (fromList (fmap parseRule rules), fmap parseUpdate updates)
 
-parseUpdate :: String -> [Int]
 parseUpdate str = fmap read (unintersperse ',' str)
 
-parseRule :: String -> (Int, Int)
 parseRule str =
   let (n1, n2) = splitList '|' str
    in (read n1, read n2)
