@@ -35,23 +35,21 @@ parseGrid x y acc ([] : css) = parseGrid 0 (y + 1) acc css
 parseGrid _ _ (open, obs, [(x, d)]) [] = (fromList open, fromList obs, x, d)
 
 -- run
-data Path a = Loop | Finite a deriving (Eq)
-
-part1 = score . walk (-1, -1) -- passing (-1,-1) as flipped tile won't change part 1 path
+part1 = score . walk (-1, -1) -- passing (-1,-1) as flipped tile won't change the path
 
 part2 (dots, hashes, x0, d0) =
   let feasible = toList (delete x0 dots) -- exclude start from flipping (not sure if needed)
-      folder flipped n
-        | walk flipped (dots, hashes, x0, d0) == Loop = n + 1
-        | otherwise = n
-   in foldr folder 0 feasible
+      isLoop flipped = walk flipped (dots, hashes, x0, d0) == Loop
+   in length $ filter isLoop feasible
 
 -- score
 score Loop = maxInt
-score (Finite p) = (length . map fst) p
+score (Finite p) = (length . map fst) p -- map is Set.map here so duplicate positions are removed
 
 -- moving
-turn (x, y) = (-y, x)
+data Path a = Loop | Finite a deriving (Eq)
+
+turn (x, y) = (-y, x) -- turn right
 
 (+.) (x, y) (x', y') = (x + x', y + y')
 
