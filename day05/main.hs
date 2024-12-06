@@ -34,7 +34,7 @@ parseRule str =
   let (n1, n2) = splitList '|' str
    in (read n1, read n2)
 
--- test
+-- test correct
 correct rules = filter (isCorrect rules)
 
 isCorrect rules (x : xs) = testNumber rules x xs && isCorrect rules xs
@@ -43,6 +43,7 @@ isCorrect _ [] = True
 testNumber rules x (y : ys) = member (x, y) rules && testNumber rules x ys
 testNumber _ _ [] = True
 
+-- test correct
 incorrect rules = filter (isIncorrect rules)
 
 isIncorrect rules (x : xs) = testIncorrect rules x xs || isIncorrect rules xs
@@ -54,12 +55,12 @@ testIncorrect _ _ [] = False
 -- make correct
 correctMany rules = fmap (toCorrect rules)
 
-toCorrect rules incorrects =
+toCorrect rules incorrect =
   let comp x y
         | member (x, y) rules = LT
         | member (y, x) rules = GT
         | otherwise = EQ
-   in sortBy comp incorrects
+   in sortBy comp incorrect
 
 -- score
 scoreMany = sum . fmap score
