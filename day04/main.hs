@@ -2,7 +2,7 @@ import Control.Monad (unless)
 import Control.Monad.State (State, get, modify, runState)
 import Data.List (concatMap, filter, group, intersect, sort, transpose)
 
-testInput = "MMMSXXMASM\nMSAMXMSMSA\nAMXSXMAAMM\nMSAMASMSMX\nXMASAMXAMM\nXXAMMXXAMA\nSMSMSASXSS\nSAXAMASAAA\nMAMMMXMMMM\nMXMXAXMASX"
+testInput = lines "MMMSXXMASM\nMSAMXMSMSA\nAMXSXMAAMM\nMSAMASMSMX\nXMASAMXAMM\nXXAMMXXAMA\nSMSMSASXSS\nSAXAMASAAA\nMAMMMXMMMM\nMXMXAXMASX"
 
 main :: IO ()
 main =
@@ -14,9 +14,9 @@ main =
     print (part2 input)
 
 -- test example input
-check1 = part1 (lines testInput) == 18
+check1 = part1 testInput == 18
 
-check2 = part2 (lines testInput) == 9
+check2 = part2 testInput == 9
 
 -- run
 part1 xss =
