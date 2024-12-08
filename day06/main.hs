@@ -1,5 +1,4 @@
 import Control.Monad (unless)
-import Data.List (nub)
 import Data.Set (delete, empty, fromList, insert, map, member, toList)
 import GHC.Base (maxInt)
 import Prelude hiding (map)
