@@ -3,7 +3,7 @@ import Data.Set (delete, empty, fromList, insert, map, member, toList)
 import GHC.Base (maxInt)
 import Prelude hiding (map)
 
-testInput = "....#.....\n.........#\n..........\n..#.......\n.......#..\n..........\n.#..^.....\n........#.\n#.........\n......#..."
+testInput = parse "....#.....\n.........#\n..........\n..#.......\n.......#..\n..........\n.#..^.....\n........#.\n#.........\n......#..."
 
 main =
   do
@@ -14,14 +14,14 @@ main =
     print (part2 input)
 
 -- test example input
-check1 = part1 (parse testInput) == 41
+check1 = part1 testInput == 41
 
-check2 = part2 (parse testInput) == 6
+check2 = part2 testInput == 6
 
 -- parse
 parse = parseGrid 0 0 ([], [], []) . lines
 
-parseGrid (x :: Int) (y :: Int) (dots, hashes, start) ((c : cs) : css) =
+parseGrid x y (dots, hashes, start) ((c : cs) : css) =
   let acc = case c of
         '#' -> (dots, (x, y) : hashes, start)
         '.' -> ((x, y) : dots, hashes, start)
