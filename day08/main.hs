@@ -26,7 +26,6 @@ parse = parseGrid 0 0 [] . lines
 parseGrid xmax ymax points [[c]] = ((xmax, ymax, c) : points, xmax, ymax)
 parseGrid x y points ((c : cs) : css) = parseGrid (x + 1) y ((x, y, c) : points) (cs : css)
 parseGrid x y points ([] : css) = parseGrid 0 (y + 1) points css
-parseGrid _ _ _ _ = ([], 0, 0) -- wont be reached
 
 -- transform
 isAntenna (_, _, c) = c /= '.'
