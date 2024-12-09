@@ -25,14 +25,14 @@ parseLine str =
   let [val, eq] = unintersperse ':' str
    in (read val, fmap read (words eq))
 
---run
+-- run
 part1 = run [(+), (*)]
 
 part2 = run [(+), (*), (||.)]
 
 run ops = sum . fmap fst . filter (testEq ops)
 
---solve
+-- solve
 (||.) :: Int -> Int -> Int
 (||.) x y = read (show x ++ show y)
 
