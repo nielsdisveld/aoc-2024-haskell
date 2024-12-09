@@ -41,7 +41,7 @@ toPairs antennas =
 run (points, xmax, ymax) =
   let antennas = filter isAntenna points
       pairs = toPairs antennas
-   in pairs
+   in length $ pairs
 
 -- in length $ nub $ sort $ concatMap (uncurry (solvePair xmax ymax)) pairs
 
