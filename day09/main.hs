@@ -53,13 +53,13 @@ moveFiles xs =
 
 moveFile n xs =
   let size = length $ filter (== n) xs
-      tryWrite current xs | length current == size = replicate size n ++ cutFile xs n
-      tryWrite current (-1 : xs) = tryWrite (-1 : current) xs
-      tryWrite current [] = current
-      tryWrite current xs = current ++ consumeOccupied xs
-      consumeOccupied (-1 : xs) = tryWrite [-1] xs
-      consumeOccupied (x : xs) | x == n = x : xs
-      consumeOccupied (x : xs) = x : consumeOccupied xs
+      tryWrite free xs | length free == size = replicate size n ++ cutFile xs n
+      tryWrite free (-1 : xs) = tryWrite (-1 : free) xs
+      tryWrite free (x : xs) = free ++ (x : consumeData xs)
+      tryWrite free [] = free
+      consumeData (-1 : xs) = tryWrite [-1] xs
+      consumeData (x : xs) | x == n = x : xs
+      consumeData (x : xs) = x : consumeData xs
    in tryWrite [] xs
 
 cutFile xs n =
