@@ -12,7 +12,6 @@ main =
     print (part2 input)
 
 -- test example input
-
 check1 = part1 testInput == 1928
 
 check2 = part2 testInput == 2858
@@ -26,7 +25,7 @@ parseFile n (c : cs) =
 
 parseFree _ [] = []
 parseFree n (c : cs) =
-  replicate (digitToInt c) (-1) ++ parseFile n cs
+  replicate (digitToInt c) (-1) ++ parseFile n cs -- '-1' represents free space
 
 -- solve
 part1 = checksum . solveLine
