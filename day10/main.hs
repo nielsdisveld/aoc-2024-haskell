@@ -16,7 +16,6 @@ main =
     print (part2 input)
 
 -- test example input
-
 check1 = part1 testInput == 36
 
 check2 = part2 testInput == 81
@@ -50,7 +49,6 @@ solvePoint points =
    in loop
 
 -- helpers
-
 toNear p = [p +. (0, 1), p +. (0, -1), p +. (1, 0), p +. (-1, 0)]
 
 (+.) (a, b) (c, d) = (a + c, b + d)
