@@ -16,12 +16,12 @@ main =
     print (part1 input)
     print (part2 input)
 
--- test example input
+--- test example input
 check1 = part1 testInput == 1930
 
 check2 = part2 testInput == 1206
 
--- parse
+--- parse
 parse = regions . parseGrid 0 0 empty . lines
 
 parseGrid _ _ points [] = points
@@ -49,7 +49,7 @@ findRegion points p =
             foldr loop (q : region) (neighbors q)
    in loop p []
 
--- part1
+--- part1
 part1 = sum . fmap scoreRegion
 
 scoreRegion region = length region * solveFence region
@@ -59,7 +59,7 @@ solveFence region = sum $ fmap (solveFencePoint region) region
 solveFencePoint region p =
   length $ filter (`notElem` region) (neighbors p)
 
--- part2
+--- part2
 part2 = sum . fmap solveRegionFenceSection
 
 solveRegionFenceSection :: [(Int, Int)] -> Int
@@ -84,13 +84,14 @@ pieces pcs (prev : current) (p : line) =
     then pieces pcs (p : (prev : current)) line
     else pieces (reverse (prev : current) : pcs) [p] line
 
+-- count fence sections for direction d
 solveLinePiece _ _ _ n [] = n
 solveLinePiece region d onFence n (p : line)
   | p +. d `elem` region = solveLinePiece region d False n line
   | not onFence = solveLinePiece region d True (n + 1) line
   | otherwise = solveLinePiece region d True n line
 
--- helpers
+--- helpers
 (+.) (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
 
 neighbors (x, y) = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
