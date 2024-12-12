@@ -4,47 +4,37 @@ import Data.Map (Map, empty, insert, lookup, member)
 import Data.Maybe (fromJust)
 import Prelude hiding (lookup)
 
-testInput = parse "125 17"
+testInput = words "125 17"
 
 main =
   do
     unless check1 (fail "part 1 oof")
-    input <- fmap parse getContents
+    input <- fmap words getContents
     print (run 25 input)
     print (run 75 input)
 
 -- test example input
 check1 = run 25 testInput == 55312
 
--- parse
-parse = words
-
 --solve
 run n =
   let folder wrd (amount, cache) =
-        let (amount', cache') = solve n cache wrd
+        let (amount', cache') = solveWord n 0 cache wrd
          in (amount + amount', cache')
    in fst . foldr folder (0, empty)
 
-solve mx cache =
-  let lu x c = fromJust (lookup x c)
-      loop n cache wrd
-        | n == mx = (1, cache)
-        | member (n, wrd) cache = (lu (n, wrd) cache, cache)
-        | wrd == "0" = loop (n + 1) cache "1"
-        | otherwise =
-          let l = length wrd
-              l' = l `div` 2
-           in if even l
-                then
-                  ( let wrd1 = take l' wrd
-                        (amount1, cache') = loop (n + 1) cache wrd1
-                        wrd2 = (strip $ drop l' wrd)
-                        (amount2, cache'') = loop (n + 1) (insert (n + 1, wrd1) amount1 cache') wrd2
-                     in (amount1 + amount2, insert (n + 1, wrd2) amount2 cache'')
-                  )
-                else loop (n + 1) cache (show (2024 * stringToInt wrd))
-   in loop 0 cache
+solveWord mx n cache word
+  | n == mx = (1, cache)
+  | member (n, word) cache = (fromJust (lookup (n, word) cache), cache)
+  | word == "0" = solveWord mx (n + 1) cache "1"
+  | odd (length word) = solveWord mx (n + 1) cache (show (2024 * stringToInt word))
+  | otherwise =
+    let l = length word `div` 2
+        word1 = take l word
+        (amount1, cache') = solveWord mx (n + 1) cache word1
+        word2 = (strip $ drop l word)
+        (amount2, cache'') = solveWord mx (n + 1) (insert (n + 1, word1) amount1 cache') word2
+     in (amount1 + amount2, insert (n + 1, word2) amount2 cache'')
 
 -- helpers
 stringToInt :: String -> Int
