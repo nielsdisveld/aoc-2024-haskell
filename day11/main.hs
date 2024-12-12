@@ -27,7 +27,7 @@ solveWord mx n cache word
   | n == mx = (1, cache)
   | member (n, word) cache = (fromJust (lookup (n, word) cache), cache)
   | word == "0" = solveWord mx (n + 1) cache "1"
-  | odd (length word) = solveWord mx (n + 1) cache (show (2024 * stringToInt word))
+  | odd (length word) = solveWord mx (n + 1) cache (multiplyBy2024 word)
   | otherwise =
     let l = length word `div` 2
         word1 = take l word
@@ -37,6 +37,8 @@ solveWord mx n cache word
      in (amount1 + amount2, insert (n + 1, word2) amount2 cache'')
 
 -- helpers
+multiplyBy2024 word = show (2024 * stringToInt word)
+
 stringToInt :: String -> Int
 stringToInt = foldl (\acc c -> (10 * acc) + digitToInt c) 0
 
