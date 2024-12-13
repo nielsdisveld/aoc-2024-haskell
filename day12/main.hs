@@ -45,8 +45,7 @@ findRegion points p =
       loop q region =
         if lu q /= plant || q `elem` region
           then region
-          else
-            foldr loop (q : region) (neighbors q)
+          else foldr loop (q : region) (neighbors q)
    in loop p []
 
 --- part1
