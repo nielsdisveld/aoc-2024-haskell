@@ -54,12 +54,7 @@ step (boxes, walls, robot) d =
         | member p walls = Nothing
         | member p boxes = checkNext (p : acc) (p +. d)
         | otherwise = Just acc
-
-      move Nothing = (boxes, walls, robot)
-      move (Just toBeMoved) =
-        let boxes' = Set.map (\b -> if b `elem` toBeMoved then b +. d else b) boxes
-         in (boxes', walls, robot +. d)
-   in move $ checkNext [] (robot +. d)
+   in move d (boxes, walls, robot) $ checkNext [] (robot +. d)
 
 step2 (boxes, walls, robot) d =
   let checkNext acc p
@@ -81,12 +76,12 @@ step2 (boxes, walls, robot) d =
             (Just xs, Just ys) -> Just (xs ++ ys)
             _ -> Nothing
         | otherwise = Just acc
+   in move d (boxes, walls, robot) $ checkNext [] (robot +. d)
 
-      move Nothing = (boxes, walls, robot)
-      move (Just toBeMoved) =
-        let boxes' = Set.map (\b -> if b `elem` toBeMoved then b +. d else b) boxes
-         in (boxes', walls, robot +. d)
-   in move $ checkNext [] (robot +. d)
+move _ state Nothing = state
+move d (boxes, walls, robot) (Just toBeMoved) =
+  let boxes' = Set.map (\b -> if b `elem` toBeMoved then b +. d else b) boxes
+   in (boxes', walls, robot +. d)
 
 score (boxes, _, _) = sum $ Set.map (\(x, y) -> (100 * y) + x) boxes
 
