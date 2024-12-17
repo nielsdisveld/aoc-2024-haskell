@@ -75,6 +75,5 @@ splitList x xs =
         | x == y = (acc, ys)
         | otherwise = splitAt' (y : acc) ys
       splitAt' acc [] = (acc, [])
-
       (xs1, xs2) = splitAt' [] xs
    in (reverse xs1, xs2)
