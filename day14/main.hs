@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 import Control.Monad (unless)
 import Data.Char (digitToInt)
 
@@ -41,9 +43,7 @@ score ps =
       q2 = filter (\(x, y) -> x < 50 && y > 51) ps
       q3 = filter (\(x, y) -> x > 50 && y < 51) ps
       q4 = filter (\(x, y) -> x > 50 && y > 51) ps
-   in -- in (q1, q2, q3, q4)
-
-      length q1 * length q2 * length q3 * length q4
+   in length q1 * length q2 * length q3 * length q4
 
 -- drawing
 draw n ps vs = do
