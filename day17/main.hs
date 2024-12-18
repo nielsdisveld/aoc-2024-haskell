@@ -20,7 +20,7 @@ main =
     print (part2 input)
 
 --- test example input
-check1 = True
+check1 = part1 testInput1 == [4, 6, 3, 5, 6, 3, 5, 2, 1, 0]
 
 check2 = part2 testInput2 == 117440
 
@@ -42,27 +42,40 @@ parseProgram str =
     ["Program:", instructions] -> fmap (read :: String -> Int) (unintersperse ',' instructions)
 
 --- run
-runPrograms cache ((a, b, c), programs) =
-  let loop _ out [] = reverse out
-      loop (a, b, c) out (p : o : ps) =
+runPrograms ((a, b, c), programs) =
+  let loop _ [] = []
+      loop (a, b, c) (p : o : ps) =
         let (a', b', c', out', jump) = runProgram (a, b, c) p o
             ps' = case jump of
               Just j -> drop j programs
               Nothing -> ps
-         in case Map.lookup (a, b, c, p : o : ps) cache of
-              Just cached -> reverse out ++ cached
-              Nothing -> loop (a', b', c') (out' ++ out) ps'
-   in loop (a, b, c) [] programs
+         in out' ++ loop (a', b', c') ps'
+   in loop (a, b, c) programs
 
-part1 = runPrograms Map.empty
+runPrograms2 ((a, b, c), programs) =
+  let loop _ [] [] = True
+      loop _ _ [] = False
+      loop (a, b, c) qs (p : o : ps) =
+        let (a', b', c', out', jump) = runProgram (a, b, c) p o
+            ps' = case jump of
+              Just j -> drop j programs
+              Nothing -> ps
+         in case (out', qs) of
+              ([out''], q : qs')
+                | out'' == q -> loop (a', b', c') qs' ps'
+                | otherwise -> False
+              ([_], []) -> False
+              _ -> loop (a', b', c') qs ps'
+   in loop (a, b, c) programs programs
+
+part1 = runPrograms
 
 part2 ((_, b, c), programs) =
-  let loop cache i =
-        let out = runPrograms cache ((i, b, c), programs)
-         in if out == programs
-              then i
-              else loop (Map.insert (i, b, c, programs) out cache) (i + 1)
-   in loop Map.empty 0
+  let loop i =
+        if runPrograms2 ((i, b, c), programs)
+          then i
+          else loop (i + 1)
+   in loop 0
 
 runProgram (a, b, c) p o =
   let combo = \case
@@ -79,7 +92,7 @@ runProgram (a, b, c) p o =
             then (a, b, c, [], Nothing)
             else (a, b, c, [], Just o)
         4 -> (a, b `xor` c, c, [], Nothing)
-        5 -> (a, b, c, [(combo o `mod` 8)], Nothing)
+        5 -> (a, b, c, [combo o `mod` 8], Nothing)
         6 -> (a, a `div` (2 ^ combo o), c, [], Nothing)
         7 -> (a, b, a `div` (2 ^ combo o), [], Nothing)
 
