@@ -67,7 +67,8 @@ addIds xss =
   let (yss, _) = runState (travLines xss) 0
    in yss
 
-increment :: State Int Int = do
+increment :: State Int Int
+increment = do
   n <- get
   modify (+ 1)
   pure n
