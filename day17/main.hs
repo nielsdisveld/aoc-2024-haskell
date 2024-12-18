@@ -4,7 +4,6 @@
 import Control.Monad (unless)
 import Data.Bits (Bits (xor))
 import Data.Char (digitToInt)
-import Data.Int (Int8)
 import qualified Data.Map as Map
 import Distribution.Simple.Utils (unintersperse)
 
@@ -40,7 +39,7 @@ parseReg str =
 
 parseProgram str =
   case words str of
-    ["Program:", instructions] -> fmap (read :: String -> Int8) (unintersperse ',' instructions)
+    ["Program:", instructions] -> fmap (read :: String -> Int) (unintersperse ',' instructions)
 
 --- run
 runPrograms cache ((a, b, c), programs) =
@@ -65,7 +64,6 @@ part2 ((_, b, c), programs) =
               else loop (Map.insert (i, b, c, programs) out cache) (i + 1)
    in loop Map.empty 0
 
-runProgram :: (Int, Int, Int) -> Int8 -> Int8 -> (Int, Int, Int, [Int8], Maybe Int)
 runProgram (a, b, c) p o =
   let combo = \case
         4 -> a
@@ -73,17 +71,17 @@ runProgram (a, b, c) p o =
         6 -> c
         i | i < 4 && i >= 0 -> i
    in case p of
-        0 -> (a `div` (2 ^ combo (fromIntegral o)), b, c, [], Nothing)
-        1 -> (a, b `xor` fromIntegral o, c, [], Nothing)
-        2 -> (a, combo (fromIntegral o) `mod` 8, c, [], Nothing)
+        0 -> (a `div` (2 ^ combo o), b, c, [], Nothing)
+        1 -> (a, b `xor` o, c, [], Nothing)
+        2 -> (a, combo o `mod` 8, c, [], Nothing)
         3 ->
           if a == 0
             then (a, b, c, [], Nothing)
-            else (a, b, c, [], Just (fromIntegral o))
+            else (a, b, c, [], Just o)
         4 -> (a, b `xor` c, c, [], Nothing)
-        5 -> (a, b, c, [fromIntegral (combo (fromIntegral o) `mod` 8) :: Int8], Nothing)
-        6 -> (a, a `div` (2 ^ combo (fromIntegral o)), c, [], Nothing)
-        7 -> (a, b, a `div` (2 ^ combo (fromIntegral o)), [], Nothing)
+        5 -> (a, b, c, [(combo o `mod` 8)], Nothing)
+        6 -> (a, a `div` (2 ^ combo o), c, [], Nothing)
+        7 -> (a, b, a `div` (2 ^ combo o), [], Nothing)
 
 --- helpers
 splitList x xs =
