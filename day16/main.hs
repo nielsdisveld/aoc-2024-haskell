@@ -86,7 +86,7 @@ countTiles source target from =
   let loop tiles p
         | fst p == source = tiles
         | otherwise = concatMap (loop (p : tiles)) (lu from p)
-   in length $ nub $ sort $ (:) source $map fst $ loop [] (target, (0, 0))
+   in length $ nub $ sort $ (:) source $ map fst $ loop [] (target, (0, 0))
 
 --- helpers
 updateFrom k v from =
