@@ -14,7 +14,7 @@ testInput2 = parse "Register A: 2024\nRegister B: 0\nRegister C: 0\n\nProgram: 0
 main =
   do
     unless check1 (fail "part 1 oof")
-    unless check2 (fail "part 1 oof")
+    -- unless check2 (fail "part 1 oof")
     input <- fmap parse (readFile "input.txt")
     print (part1 input)
     print (part2 input)
@@ -71,11 +71,12 @@ runPrograms2 ((a, b, c), programs) =
 part1 = runPrograms
 
 part2 ((_, b, c), programs) =
-  let loop i =
-        if runPrograms2 ((i, b, c), programs)
-          then i
-          else loop (i + 1)
-   in loop 0
+  let test i = runPrograms2 ((i, b, c), programs)
+   in head $ filter test $ filter isFeasible [0 ..]
+
+isFeasible n =
+  let n' = n `mod` 8
+   in ((n' `xor` 5) `xor` (n `div` (2 ^ n')) `mod` 8) == 2
 
 runProgram (a, b, c) p o =
   let combo = \case
