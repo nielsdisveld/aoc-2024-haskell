@@ -4,7 +4,7 @@
 import Control.Monad (unless)
 import Data.Bits (Bits (xor))
 import Data.Char (digitToInt)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Distribution.Simple.Utils (unintersperse)
 
 testInput1 = parse "Register A: 729\nRegister B: 0\nRegister C: 0\n\nProgram: 0,1,5,4,3,0"
@@ -16,13 +16,14 @@ main =
     unless check1 (fail "part 1 oof")
     -- unless check2 (fail "part 1 oof")
     input <- fmap parse (readFile "input.txt")
-    print (part1 input)
-    print (part2 input)
+    print (runPrograms input)
+
+-- print (part2 input)
 
 --- test example input
-check1 = part1 testInput1 == [4, 6, 3, 5, 6, 3, 5, 2, 1, 0]
+check1 = runPrograms testInput1 == [4, 6, 3, 5, 6, 3, 5, 2, 1, 0]
 
-check2 = part2 testInput2 == 117440
+-- check2 = part2 testInput2 == 117440
 
 --- parse
 parse =
@@ -51,32 +52,6 @@ runPrograms ((a, b, c), programs) =
               Nothing -> ps
          in out' ++ loop (a', b', c') ps'
    in loop (a, b, c) programs
-
-runPrograms2 ((a, b, c), programs) =
-  let loop _ [] [] = True
-      loop _ _ [] = False
-      loop (a, b, c) qs (p : o : ps) =
-        let (a', b', c', out', jump) = runProgram (a, b, c) p o
-            ps' = case jump of
-              Just j -> drop j programs
-              Nothing -> ps
-         in case (out', qs) of
-              ([out''], q : qs')
-                | out'' == q -> loop (a', b', c') qs' ps'
-                | otherwise -> False
-              ([_], []) -> False
-              _ -> loop (a', b', c') qs ps'
-   in loop (a, b, c) programs programs
-
-part1 = runPrograms
-
-part2 ((_, b, c), programs) =
-  let test i = runPrograms2 ((i, b, c), programs)
-   in head $ filter test $ filter isFeasible [0 ..]
-
-isFeasible n =
-  let n' = n `mod` 8
-   in ((n' `xor` 5) `xor` (n `div` (2 ^ n')) `mod` 8) == 2
 
 runProgram (a, b, c) p o =
   let combo = \case
