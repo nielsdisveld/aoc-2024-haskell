@@ -13,17 +13,17 @@ testInput2 = parse "Register A: 2024\nRegister B: 0\nRegister C: 0\n\nProgram: 0
 
 main =
   do
+    print (part2 testInput2)
     unless check1 (fail "part 1 oof")
-    -- unless check2 (fail "part 1 oof")
+    unless check2 (fail "part 2 oof")
     input <- fmap parse (readFile "input.txt")
     print (runPrograms input)
-
--- print (part2 input)
+    print (part2 input)
 
 --- test example input
 check1 = runPrograms testInput1 == [4, 6, 3, 5, 6, 3, 5, 2, 1, 0]
 
--- check2 = part2 testInput2 == 117440
+check2 = part2 testInput2 == 117440
 
 --- parse
 parse =
@@ -43,6 +43,17 @@ parseProgram str =
     ["Program:", instructions] -> fmap (read :: String -> Int) (unintersperse ',' instructions)
 
 --- run
+part2 ((a, b, c), programs) =
+  let loop _ [] r = r
+      loop qs (p : ps) q =
+        let r =
+              head $
+                filter
+                  (\i -> runPrograms ((i, b, c), programs) == p : qs)
+                  [q * 8 ..]
+         in loop (p : qs) ps r
+   in loop [] (reverse programs) 0
+
 runPrograms ((a, b, c), programs) =
   let loop _ [] = []
       loop (a, b, c) (p : o : ps) =
