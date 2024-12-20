@@ -46,21 +46,21 @@ part2 bs =
           _ -> b
    in loop bs 1 bs
 
-astar (vs, target) =
+astar (bs, target) =
   let source = (0, 0)
       g = Map.singleton source 0
       f = Map.singleton source (d source target)
-      vertices = Set.fromList vs
+      byteSet = Set.fromList bs
 
       loop _ _ _ open | open == Set.empty = Nothing -- No paths possible
       loop g f from open =
         let current = minimumBy (cp f) open
-            currentG = lu g current
-            ns = toNear target vertices current
+            currentG = lu current g
+            ns = filter (isInside target) $ toNear byteSet current
 
             folder (g', f', from', open') n =
               let tentative = currentG + d current n
-               in if tentative < lu g' n
+               in if tentative < lu n g'
                     then
                       ( Map.insert n tentative g',
                         Map.insert n (tentative + d n target) f',
@@ -71,7 +71,7 @@ astar (vs, target) =
 
             (g'', f'', from'', open'') = foldl folder (g, f, from, open) ns
          in if current == target
-              then Just (lu g target, reconstruct from target)
+              then Just (lu target g, reconstruct from target)
               else loop g'' f'' from'' (Set.delete current open'')
    in loop g f Map.empty (Set.singleton source)
 
@@ -83,12 +83,13 @@ reconstruct from target =
    in loop [] target
 
 --- helpers
-cp f p q = compare (lu f p) (lu f q)
+cp f p q = compare (lu p f) (lu p f)
 
-lu mp x = fromMaybe maxInt $ Map.lookup x mp -- lookup with default maxInt
+lu mp = fromMaybe maxInt . Map.lookup mp
 
 d (x1, y1) (x2, y2) = abs (x1 - x2) + abs (y1 - y2)
 
-toNear target bs (x, y) = filter (isInside target) $ filter (`Set.notMember` bs) [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+toNear bs (x, y) =
+  filter (`Set.notMember` bs) [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
 
 isInside (mx, my) (x, y) = x >= 0 && y >= 0 && x <= mx && y <= my
