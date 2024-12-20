@@ -83,11 +83,11 @@ reconstruct from target =
    in loop [] target
 
 --- helpers
-cp f p q = compare (lu p f) (lu p f)
+cp f p q = compare (lu p f) (lu p f) -- compare by f score
 
-lu mp = fromMaybe maxInt . Map.lookup mp
+lu mp = fromMaybe maxInt . Map.lookup mp -- lookup with maxInt as default value
 
-d (x1, y1) (x2, y2) = abs (x1 - x2) + abs (y1 - y2)
+d (x1, y1) (x2, y2) = abs (x1 - x2) + abs (y1 - y2) -- also used as h function for A*
 
 toNear bs (x, y) =
   filter (`Set.notMember` bs) [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
