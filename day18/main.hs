@@ -2,9 +2,9 @@
 
 import Control.Monad (unless)
 import Data.Foldable (minimumBy)
-import Data.Map qualified as Map
+import qualified Data.Map as Map
 import Data.Maybe (fromJust, fromMaybe, isNothing)
-import Data.Set qualified as Set
+import qualified Data.Set as Set
 import Distribution.Simple.Utils (unintersperse)
 import GHC.Base (maxInt)
 
